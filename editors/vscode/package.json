@@ -1,0 +1,35 @@
+{
+    "name": "hlwl-lang",
+    "displayName": "HLWL",
+    "publisher": "hlwl",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.80.0"
+    },
+    "contributes": {
+        "languages": [
+            {
+                "id": "hlwl",
+                "aliases": [
+                    "HLWL",
+                    "hlwl"
+                ],
+                "extensions": [
+                    ".hlwl"
+                ],
+                "configuration": "./language-configuration.json",
+                "icon": {
+                    "light": "hlwl-icon.svg",
+                    "dark": "hlwl-icon.svg"
+                }
+            }
+        ],
+        "grammars": [
+            {
+                "language": "hlwl",
+                "scopeName": "source.hlwl",
+                "path": "./syntaxes/hlwl.tmLanguage.json"
+            }
+        ]
+    }
+}

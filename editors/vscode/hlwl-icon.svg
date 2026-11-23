@@ -1,0 +1,28 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+	<style>
+		.s0 { fill: #606060 } 
+		.s1 { fill: #6d6d6d } 
+		.s2 { fill: none;stroke: #000000 } 
+		.s3 { fill: #ed0000 } 
+		.s4 { fill: #ffff3f } 
+		.s5 { fill: #00e535 } 
+		.s6 { fill: #d4f9f9;stroke: #000000;paint-order:stroke fill markers;stroke-linejoin: round;stroke-width: 0 } 
+		.s7 { fill: #0000ee;stroke: #000000;paint-order:stroke fill markers;stroke-linejoin: round;stroke-width: 0 } 
+		.s8 { fill: #0000ee } 
+		.s9 { fill: #ffffff;stroke: #000000;paint-order:stroke fill markers;stroke-linejoin: round;stroke-width: 0 } 
+	</style>
+	<g>
+		<path id="svg_1" class="s0" d="m72.5 78.57c0-12.54 10.13-23.07 22.18-23.07h610.64c12.05 0 22.18 10.53 22.18 23.07v442.86c0 12.54-10.13 23.07-22.18 23.07h-610.64c-12.05 0-22.18-10.53-22.18-23.07z"/>
+		<path id="svg_3" fill-rule="evenodd" class="s1" d="m95 54h610c12.15 0 22 9.85 22 22v13c0 12.15-9.85 22-22 22h-610c-12.15 0-22-9.85-22-22v-13c0-12.15 9.85-22 22-22z"/>
+		<path id="svg_4" fill-rule="evenodd" class="s1" d="m73 73h654v39h-654z"/>
+		<path id="svg_7" fill-rule="evenodd" class="s2" d="m74 112h650"/>
+		<path id="svg_9" fill-rule="evenodd" class="s3" d="m97 88c-4.98 0-9-3.8-9-8.5 0-4.7 4.02-8.5 9-8.5 4.98 0 9 3.8 9 8.5 0 4.7-4.02 8.5-9 8.5z"/>
+		<path id="svg_12" fill-rule="evenodd" class="s4" d="m120 88c-4.98 0-9-3.8-9-8.5 0-4.7 4.02-8.5 9-8.5 4.98 0 9 3.8 9 8.5 0 4.7-4.02 8.5-9 8.5z"/>
+		<path id="svg_13" fill-rule="evenodd" class="s5" d="m143 88c-4.98 0-9-3.8-9-8.5 0-4.7 4.02-8.5 9-8.5 4.98 0 9 3.8 9 8.5 0 4.7-4.02 8.5-9 8.5z"/>
+		<path id="svg_14" class="s6" d="m286.21 308.48v82.52h-22.46v-81.79q0-19.41-7.57-29.05-7.57-9.64-22.71-9.64-18.19 0-28.68 11.59-10.5 11.6-10.5 31.62v77.27h-22.58v-189.94h22.58v74.46q8.05-12.33 18.92-18.43 10.99-6.1 25.27-6.1 23.56 0 35.64 14.64 12.09 14.53 12.09 42.85zm44.35 82.52v-189.94h22.46v189.94z"/>
+		<path id="svg_16" class="s7" d="m414.26 394l-35.76-136.72h22.46l28.08 106.69 27.95-106.69h26.49l28.07 106.69 27.96-106.69h22.46l-35.77 136.72h-26.49l-29.42-112.06-29.54 112.06z"/>
+		<path id="svg_18" fill-rule="evenodd" class="s8" d="m509 391h14v1h-14z"/>
+		<path id="svg_19" fill-rule="evenodd" class="s8" d="m459 382v1z"/>
+		<path id="svg_20" class="s9" d="m602.56 397v-189.94h22.46v189.94z"/>
+	</g>
+</svg>

@@ -1,0 +1,13 @@
+<file, name = "Example", interpret = true>
+<config>
+    "browserTargets": ["Chrome", "Firefox", "Safari"]
+</config>
+<main.func>
+    // Adds two numbers
+    cint Add()
+    {
+        io:WriteToConsole(1 + 2);
+        return 1;
+    }
+</main.func>
+</file>
