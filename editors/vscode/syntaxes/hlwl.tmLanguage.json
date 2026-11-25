@@ -6,31 +6,16 @@
             "include": "#comments"
         },
         {
+            "include": "#hex-colors"
+        },
+        {
             "include": "#directives"
         },
         {
-            "include": "#blocks"
+            "include": "#structure-tags"
         },
         {
-            "include": "#strings"
-        },
-        {
-            "include": "#numbers"
-        },
-        {
-            "include": "#namespaces"
-        },
-        {
-            "include": "#keywords"
-        },
-        {
-            "include": "#types"
-        },
-        {
-            "include": "#functions"
-        },
-        {
-            "include": "#constants"
+            "include": "#code-constructs"
         }
     ],
     "repository": {
@@ -47,29 +32,13 @@
                 }
             ]
         },
-        "directives": {
-            "patterns": [
-                {
-                    "name": "keyword.control.directive.hlwl",
-                    "match": "#[a-z]+"
-                }
-            ]
+        "hex-colors": {
+            "name": "constant.other.color.rgb-value.hlwl",
+            "match": "#[0-9a-fA-F]{6}(?:[0-9a-fA-F]{2})?\\b"
         },
-        "blocks": {
-            "patterns": [
-                {
-                    "name": "entity.name.tag.block.hlwl",
-                    "match": "</?(file|pkg|include|globals|helpers|code|layout|right_click_options|stdMath|types)\\b"
-                },
-                {
-                    "name": "entity.name.tag.lifecycle.hlwl",
-                    "match": "</?(main\\.(func|loop|if_func_once|if_func_always|render|cpu_gpu))\\b"
-                },
-                {
-                    "name": "entity.name.tag.gpu.hlwl",
-                    "match": "</?(gpu\\.(main_render_pipeline|material_shader|post_processing_shader|compute|uniform|buffer))\\b"
-                }
-            ]
+        "directives": {
+            "name": "keyword.control.directive.hlwl",
+            "match": "#[a-z_][a-z0-9_]*\\b"
         },
         "strings": {
             "name": "string.quoted.double.hlwl",
@@ -83,35 +52,108 @@
             ]
         },
         "numbers": {
-            "patterns": [
-                {
-                    "name": "constant.numeric.hlwl",
-                    "match": "\\b[0-9]+(\\.[0-9]+)?[fFuUiI]?\\b"
-                }
-            ]
+            "name": "constant.numeric.hlwl",
+            "match": "\\b[0-9]+(?:\\.[0-9]+)?[fFuUiI]?\\b"
         },
-        "namespaces": {
+        "structure-tags": {
+            "begin": "(\\u003c/?)(page|scene|pkg|include|globals|helpers|code|layout|right_click_options|types|main\\.(?:func|loop|if_func_once|if_func_always|render|cpu_gpu)|gpu\\.(?:main_render_pipeline|material_shader|post_processing_shader|compute|uniform|buffer)|[a-zA-Z_][a-zA-Z0-9_.]*)\\b",
+            "beginCaptures": {
+                "1": {
+                    "name": "punctuation.definition.tag.begin.hlwl"
+                },
+                "2": {
+                    "name": "entity.name.tag.hlwl"
+                }
+            },
+            "end": "(\\u003e)",
+            "endCaptures": {
+                "1": {
+                    "name": "punctuation.definition.tag.end.hlwl"
+                }
+            },
             "patterns": [
                 {
-                    "comment": "Built-in core namespaces like io::WriteToConsole or ui:BUTTON",
-                    "match": "\\b(std|ui|gpu|io)(::?)",
+                    "match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)\\s*(=)",
                     "captures": {
                         "1": {
-                            "name": "support.class.namespace.hlwl"
+                            "name": "variable.other.attribute.hlwl"
                         },
                         "2": {
-                            "name": "punctuation.accessor.hlwl"
+                            "name": "keyword.operator.assignment.hlwl"
                         }
                     }
                 },
                 {
-                    "comment": "Scoped package imports like (easyGraphics)",
-                    "match": "\\(([a-z][a-zA-Z0-9_]*)\\)",
-                    "captures": {
-                        "1": {
-                            "name": "entity.name.namespace.hlwl"
+                    "begin": "\\(",
+                    "beginCaptures": {
+                        "0": {
+                            "name": "punctuation.section.parens.begin.hlwl"
                         }
-                    }
+                    },
+                    "end": "\\)",
+                    "endCaptures": {
+                        "0": {
+                            "name": "punctuation.section.parens.end.hlwl"
+                        }
+                    },
+                    "patterns": [
+                        {
+                            "include": "#code-constructs"
+                        }
+                    ]
+                },
+                {
+                    "include": "#strings"
+                },
+                {
+                    "include": "#numbers"
+                },
+                {
+                    "name": "constant.language.boolean.hlwl",
+                    "match": "\\b(true|false|null)\\b"
+                }
+            ]
+        },
+        "code-constructs": {
+            "patterns": [
+                {
+                    "include": "#comments"
+                },
+                {
+                    "include": "#strings"
+                },
+                {
+                    "include": "#hex-colors"
+                },
+                {
+                    "include": "#numbers"
+                },
+                {
+                    "include": "#keywords"
+                },
+                {
+                    "include": "#type-declarations"
+                },
+                {
+                    "include": "#types-and-modifiers"
+                },
+                {
+                    "include": "#namespaces"
+                },
+                {
+                    "include": "#functions"
+                },
+                {
+                    "include": "#constants"
+                },
+                {
+                    "include": "#members"
+                },
+                {
+                    "include": "#variables"
+                },
+                {
+                    "include": "#operators"
                 }
             ]
         },
@@ -130,45 +172,191 @@
                     "match": "\\b(true|false|null)\\b"
                 },
                 {
-                    "name": "support.function.builtin.hlwl",
+                    "name": "entity.name.function.builtin.hlwl",
                     "match": "\\b(hlwlRunGPU)\\b"
                 }
             ]
         },
-        "types": {
+        "type-declarations": {
+            "match": "\\b(type|gtype|enum)\\s+([A-Z][a-zA-Z0-9_]*)(?:\\s*(:)\\s*([A-Z][a-zA-Z0-9_]*))?",
+            "captures": {
+                "1": {
+                    "name": "keyword.declaration.type.hlwl"
+                },
+                "2": {
+                    "name": "support.type.hlwl"
+                },
+                "3": {
+                    "name": "punctuation.separator.inheritance.hlwl"
+                },
+                "4": {
+                    "name": "support.type.inherited.hlwl"
+                }
+            }
+        },
+        "types-and-modifiers": {
             "patterns": [
                 {
-                    "comment": "Mutable and c-prefixed immutable primitive types",
-                    "name": "storage.type.primitive.hlwl",
-                    "match": "\\bc?(void|bool|int|uint|float|double|string|vec2|vec3|vec4|mat4)\\b"
+                    "match": "\\b(r|p)\\s*(\\()\\s*(?:([a-zA-Z_][a-zA-Z0-9_]*)(::?))?([A-Z][a-zA-Z0-9_]*)\\s*(\\))",
+                    "captures": {
+                        "1": {
+                            "name": "storage.modifier.pointer.hlwl"
+                        },
+                        "2": {
+                            "name": "punctuation.section.parens.begin.hlwl"
+                        },
+                        "3": {
+                            "name": "meta.namespace.hlwl"
+                        },
+                        "4": {
+                            "name": "punctuation.accessor.hlwl"
+                        },
+                        "5": {
+                            "name": "storage.type.hlwl"
+                        },
+                        "6": {
+                            "name": "punctuation.section.parens.end.hlwl"
+                        }
+                    }
                 },
                 {
-                    "comment": "PascalCase Structs & Types (e.g., Vector3, Component)",
-                    "name": "entity.name.type.hlwl",
-                    "match": "\\b[A-Z][a-zA-Z0-9_]*\\b"
+                    "match": "\\b(c)?(void|bool|int|uint|float|double|string|vec2|vec3|vec4|mat3|mat4|mat3x4)\\b",
+                    "captures": {
+                        "1": {
+                            "name": "storage.modifier.const.hlwl"
+                        },
+                        "2": {
+                            "name": "storage.type.primitive.hlwl"
+                        }
+                    }
                 },
                 {
-                    "comment": "Declarator for types",
+                    "match": "(\\u003c)\\s*(?:([a-zA-Z_][a-zA-Z0-9_]*)(::?))?([A-Z][a-zA-Z0-9_]*|void|bool|int|uint|float|double|string|vec2|vec3|vec4|mat3|mat4|mat3x4)\\s*(\\u003e)",
+                    "captures": {
+                        "1": {
+                            "name": "punctuation.definition.typeparameters.begin.hlwl"
+                        },
+                        "2": {
+                            "name": "meta.namespace.hlwl"
+                        },
+                        "3": {
+                            "name": "punctuation.accessor.hlwl"
+                        },
+                        "4": {
+                            "name": "storage.type.hlwl"
+                        },
+                        "5": {
+                            "name": "punctuation.definition.typeparameters.end.hlwl"
+                        }
+                    }
+                },
+                {
                     "name": "storage.type.hlwl",
-                    "match": "\\b(type|gtype|enum)\\b"
+                    "match": "(?<![.:])\\b[A-Z](?=[a-z0-9_]*[a-z])[a-zA-Z0-9_]*\\b(?!\\s*[\\u003c(])"
+                }
+            ]
+        },
+        "namespaces": {
+            "patterns": [
+                {
+                    "match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)(::?)([a-zA-Z_][a-zA-Z0-9_]*)(?=\\s*[\\u003c(])",
+                    "captures": {
+                        "1": {
+                            "name": "meta.namespace.hlwl"
+                        },
+                        "2": {
+                            "name": "punctuation.accessor.hlwl"
+                        },
+                        "3": {
+                            "name": "entity.name.function.hlwl"
+                        }
+                    }
+                },
+                {
+                    "match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)(::?)([A-Z](?=[a-z0-9_]*[a-z])[a-zA-Z0-9_]*)\\b",
+                    "captures": {
+                        "1": {
+                            "name": "meta.namespace.hlwl"
+                        },
+                        "2": {
+                            "name": "punctuation.accessor.hlwl"
+                        },
+                        "3": {
+                            "name": "storage.type.hlwl"
+                        }
+                    }
+                },
+                {
+                    "match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)(::?)([A-Z][A-Z0-9_]{1,})\\b",
+                    "captures": {
+                        "1": {
+                            "name": "meta.namespace.hlwl"
+                        },
+                        "2": {
+                            "name": "punctuation.accessor.hlwl"
+                        },
+                        "3": {
+                            "name": "variable.other.constant.hlwl"
+                        }
+                    }
+                },
+                {
+                    "match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)(::?)([a-z_][a-zA-Z0-9_]*)\\b",
+                    "captures": {
+                        "1": {
+                            "name": "meta.namespace.hlwl"
+                        },
+                        "2": {
+                            "name": "punctuation.accessor.hlwl"
+                        },
+                        "3": {
+                            "name": "variable.other.readwrite.member.hlwl"
+                        }
+                    }
+                },
+                {
+                    "match": "(?<=\\()\\s*([a-z][a-zA-Z0-9_]*)\\s*(?=\\))",
+                    "captures": {
+                        "1": {
+                            "name": "meta.namespace.hlwl"
+                        }
+                    }
                 }
             ]
         },
         "functions": {
             "patterns": [
                 {
-                    "comment": "PascalCase and _PascalCase functions",
+                    "name": "entity.name.function.member.hlwl",
+                    "match": "(?<=\\.)\\b_?[a-zA-Z][a-zA-Z0-9_]*\\b(?=\\s*[\\u003c(])"
+                },
+                {
                     "name": "entity.name.function.hlwl",
-                    "match": "\\b_?[A-Z][a-zA-Z0-9_]*\\s*(?=\\()"
+                    "match": "(?<![.:])\\b_?[a-zA-Z][a-zA-Z0-9_]*\\b(?=\\s*[\\u003c(])"
                 }
             ]
         },
         "constants": {
+            "name": "variable.other.constant.hlwl",
+            "match": "(?<![.:])\\b[A-Z][A-Z0-9_]{1,}\\b(?!\\s*[\\u003c(])"
+        },
+        "members": {
+            "name": "variable.other.readwrite.member.hlwl",
+            "match": "(?<=\\.)\\b[a-zA-Z_][a-zA-Z0-9_]*\\b(?!\\s*[\\u003c(])"
+        },
+        "variables": {
+            "name": "variable.other.readwrite.hlwl",
+            "match": "(?<![.:])\\b[a-z_][a-zA-Z0-9_]*\\b(?!\\s*[\\u003c(])"
+        },
+        "operators": {
             "patterns": [
                 {
-                    "comment": "SCREAMING_SNAKE_CASE Globals",
-                    "name": "variable.other.constant.hlwl",
-                    "match": "\\b[A-Z][A-Z0-9_]{2,}\\b"
+                    "name": "keyword.operator.compound.hlwl",
+                    "match": "(\\u002b=|-=|\\u002a=|/=|==|!=|\\u003c=|\\u003e=|&&|\\|\\|)"
+                },
+                {
+                    "name": "keyword.operator.arithmetic.hlwl",
+                    "match": "(=|\\u002b|-|\\u002a|/|\\u003c|\\u003e)"
                 }
             ]
         }

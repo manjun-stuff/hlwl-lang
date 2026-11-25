@@ -5,3 +5,11 @@ roadmap.hlwl
 editors/.DS_Store
 
 editors/vscode/.DS_Store
+
+test.hlwl
+
+.vscode/
+
+Test/
+
+a.out
