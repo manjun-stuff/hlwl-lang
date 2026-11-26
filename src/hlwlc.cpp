@@ -1,9 +1,11 @@
 #include <string>
 #include <sstream>
 #include <fstream>
-#include <filesystem>
 #include <vector>
 #include <iostream>
+#include <cctype>
+#include <unordered_map>
+#include <filesystem>
 
 namespace fs = std::filesystem;
 
@@ -57,7 +59,6 @@ int get_line_num(const std::string &code, const std::string &lineData)
         }
         ++currentLineNum;
     }
-
     return 1;
 }
 
@@ -65,6 +66,74 @@ int get_line_num(const std::string &code, const std::string &lineData)
 namespace Compiler
 {
     struct Diagnostic;
+
+    enum class TokenType
+    {
+        // keywords
+        VoidKw,
+        RefKw,
+        // identifiers & literals
+        Identifier,
+        StringLiteral,
+        HexColor,
+        // punctuation & operators
+        LParen,
+        RParen,
+        LBrace,
+        RBrace,
+        Colon,
+        Dot,
+        Equals,
+        Semicolon,
+        // end of file
+        EndOfFile
+    };
+
+    std::string token_type_to_string(TokenType type)
+    {
+        switch (type)
+        {
+        case TokenType::VoidKw:
+            return "VoidKw";
+        case TokenType::RefKw:
+            return "RefKw";
+        case TokenType::Identifier:
+            return "Identifier";
+        case TokenType::StringLiteral:
+            return "StringLiteral";
+        case TokenType::HexColor:
+            return "HexColor";
+        case TokenType::LParen:
+            return "LParen";
+        case TokenType::RParen:
+            return "RParen";
+        case TokenType::LBrace:
+            return "LBrace";
+        case TokenType::RBrace:
+            return "RBrace";
+        case TokenType::Colon:
+            return "Colon";
+        case TokenType::Dot:
+            return "Dot";
+        case TokenType::Equals:
+            return "Equals";
+        case TokenType::Semicolon:
+            return "Semicolon";
+        case TokenType::EndOfFile:
+            return "EndOfFile";
+        default:
+            return "Unknown";
+        }
+    }
+
+    struct Token
+    {
+        TokenType tokenType;
+        std::string data;
+
+        int line;
+        int column;
+    };
 
     /**
      * The output of the preprocessor that the other systems consume
@@ -170,6 +239,9 @@ namespace Compiler
                     continue;
                 }
 
+                if (inComment)
+                    continue;
+
                 if (currChar == '>' && !inDoubleStr && !inSingleStr)
                 {
                     inTag = false;
@@ -216,9 +288,6 @@ namespace Compiler
                     continue;
                 }
 
-                if (inComment)
-                    continue;
-
                 if (inTag)
                     tagData += currChar;
 
@@ -261,6 +330,193 @@ namespace Compiler
 
     class Lexer
     {
+    public:
+        std::vector<Token> tokenize_data(Data &inputData)
+        {
+            pos = 0;
+            line = 1;
+            column = 1;
+
+            std::vector<Token> tokens = {};
+            if (inputData.rawData == "")
+                return tokens;
+            source = inputData.rawData;
+
+            do
+            {
+                char currChar = source[pos];
+
+                if (std::isspace(currChar))
+                {
+                    advance();
+                    continue;
+                }
+
+                if (std::isalpha(currChar) || currChar == '_')
+                {
+                    std::string word = std::string(1, currChar);
+                    currChar = advance();
+
+                    while ((std::isalnum(currChar) || currChar == '_') && !is_at_end())
+                    {
+                        word += currChar;
+                        currChar = advance();
+                    }
+
+                    if (keywords.contains(word))
+                    {
+                        tokens.push_back(Token{.data = word, .line = line, .column = column, .tokenType = keywords.at(word)});
+                    }
+                    else
+                    {
+                        tokens.push_back(Token{.data = word, .line = line, .column = column, .tokenType = TokenType::Identifier});
+                    }
+
+                    continue;
+                }
+
+                if (currChar == '"')
+                {
+                    std::string word = "";
+                    if (!is_at_end())
+                        currChar = advance();
+
+                    while (currChar != '"' && !is_at_end())
+                    {
+                        word += currChar;
+                        currChar = advance();
+                    }
+
+                    tokens.push_back(Token{
+                        .data = word,
+                        .line = line,
+                        .column = column,
+                        .tokenType = TokenType::StringLiteral});
+
+                    if (!is_at_end())
+                        advance();
+                    continue;
+                }
+
+                if (currChar == '#')
+                {
+                    std::string word = "";
+                    if (!is_at_end())
+                        currChar = advance();
+
+                    while (std::isxdigit(currChar) && !is_at_end())
+                    {
+                        word += currChar;
+                        currChar = advance();
+                    }
+
+                    tokens.push_back(Token{
+                        .data = word,
+                        .line = line,
+                        .column = column,
+                        .tokenType = TokenType::HexColor});
+
+                    continue;
+                }
+
+                Token token;
+                token.column = column;
+                token.line = line;
+                token.data = "";
+
+                switch (currChar)
+                {
+                case '{':
+                    token.data = "{";
+                    token.tokenType = TokenType::LBrace;
+                    break;
+                case '}':
+                    token.data = "}";
+                    token.tokenType = TokenType::RBrace;
+                    break;
+                case '(':
+                    token.data = "(";
+                    token.tokenType = TokenType::LParen;
+                    break;
+                case ')':
+                    token.data = ")";
+                    token.tokenType = TokenType::RParen;
+                    break;
+                case ':':
+                    token.data = ":";
+                    token.tokenType = TokenType::Colon;
+                    break;
+                case '.':
+                    token.data = ".";
+                    token.tokenType = TokenType::Dot;
+                    break;
+                case '=':
+                    token.data = "=";
+                    token.tokenType = TokenType::Equals;
+                    break;
+                case ';':
+                    token.data = ";";
+                    token.tokenType = TokenType::Semicolon;
+                    break;
+                }
+
+                if (token.data != "")
+                {
+                    tokens.push_back(token);
+                }
+                else
+                {
+                    inputData.diagnostics.push_back(Diagnostic{
+                        .error = "Unexpected character",
+                        .line = line,
+                        .column = column});
+                    if (!is_at_end())
+                        advance();
+                }
+
+                if (!is_at_end())
+                    advance();
+
+            } while (!is_at_end());
+
+            tokens.push_back(Token{
+                .data = "",
+                .column = column,
+                .line = line,
+                .tokenType = TokenType::EndOfFile});
+
+            return tokens;
+        }
+
+    private:
+        std::string source;
+        size_t pos = 0;
+        int line = 1;
+        int column = 1;
+
+        std::unordered_map<std::string, TokenType> keywords = {
+            {"void", TokenType::VoidKw},
+            {"r", TokenType::RefKw}};
+
+        bool is_at_end() const
+        {
+            return pos >= source.length();
+        }
+
+        char advance()
+        {
+            char currChar = source[++pos];
+            if (currChar == '\n')
+            {
+                line++;
+                column = 1;
+            }
+            else
+            {
+                column++;
+            }
+            return currChar;
+        }
     };
 
     class Parser

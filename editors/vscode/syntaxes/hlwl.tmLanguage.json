@@ -165,7 +165,7 @@
                 },
                 {
                     "name": "storage.modifier.hlwl",
-                    "match": "\\b(fn|cfn|var|cvar|state|vert|frag|comp)\\b"
+                    "match": "\\b(fn|cfn|pfn|var|cvar|state|vert|frag|comp)\\b"
                 },
                 {
                     "name": "constant.language.boolean.hlwl",
@@ -197,7 +197,7 @@
         "types-and-modifiers": {
             "patterns": [
                 {
-                    "match": "\\b(r|p)\\s*(\\()\\s*(?:([a-zA-Z_][a-zA-Z0-9_]*)(::?))?([A-Z][a-zA-Z0-9_]*)\\s*(\\))",
+                    "match": "\\b(c|r|p)\\s*(\\()\\s*(?:([a-zA-Z_][a-zA-Z0-9_]*)(::?))?([A-Z][a-zA-Z0-9_]*)\\s*(\\))",
                     "captures": {
                         "1": {
                             "name": "storage.modifier.pointer.hlwl"
@@ -220,7 +220,7 @@
                     }
                 },
                 {
-                    "match": "\\b(c)?(void|bool|int|uint|float|double|string|vec2|vec3|vec4|mat3|mat4|mat3x4)\\b",
+                    "match": "\\b(c|r|p)?(void|bool|int|uint|float|double|string|vec2|vec3|vec4|mat3|mat4|mat3x4)\\b",
                     "captures": {
                         "1": {
                             "name": "storage.modifier.const.hlwl"

@@ -24,6 +24,9 @@ int main(int argc, char *argv[])
     Compiler::Preprocessor preprocessor;
     Compiler::Data data = preprocessor.process_file(filePath);
 
+    Compiler::Lexer lexer;
+    std::vector<Compiler::Token> tokens = lexer.tokenize_data(data);
+
     if (!data.diagnostics.empty())
     {
         Compiler::print_errors(data);
@@ -36,7 +39,15 @@ int main(int argc, char *argv[])
         std::cerr << "Error opening file" << std::endl;
     }
 
-    hlwtFile << data.rawData;
+    // make human readable form of tokens
+    std::string textTokens = "";
+    for (int i = 0; i < tokens.size(); ++i)
+    {
+        Compiler::Token currToken = tokens[i];
+        textTokens += Compiler::token_type_to_string(currToken.tokenType) + ": " + currToken.data + "\n";
+    }
+
+    hlwtFile << textTokens;
 
     hlwtFile.close();
 
